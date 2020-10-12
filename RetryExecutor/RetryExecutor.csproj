@@ -2,6 +2,13 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <PackageId>RetryExecutor</PackageId>
+        <Version>1.0.1</Version>
+        <Authors>ReiRokusanami</Authors>
+        <Description>Simply CSharp Library. Retry on a method execution that may fail.</Description>
+        <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/ReiRokusanami0010/RetryExecutor</RepositoryUrl>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
 </Project>
