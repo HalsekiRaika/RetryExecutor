@@ -5,7 +5,7 @@ using System.Threading;
 namespace RetryExecutor {
     public class ReSpell {
         public static void Execute(uint retryRemaining, uint intervalSecond, Action action, 
-                [Optional] Action remainAction, [Optional] Action failureAction) {
+                [Optional] Action<int> remainAction, [Optional] Action<int> failureAction) {
             if (retryRemaining == 0) { throw new ArgumentException("retryRemaining must be greater than or equal to 1."); }
             if (intervalSecond == 0) { throw new ArgumentException("intervalSecond must be greater than or equal to 1."); }
             if (action == null) { throw new ArgumentNullException(nameof(action));}
@@ -17,9 +17,9 @@ namespace RetryExecutor {
                 } catch (Exception e) {
                     if (retryCount++ < retryRemaining) {
                         Thread.Sleep(Convert.ToInt32(intervalSecond * 1000));
-                        remainAction?.Invoke();
+                        remainAction?.Invoke(retryCount);
                     } else {
-                        failureAction?.Invoke();
+                        failureAction?.Invoke(retryCount);
                         throw e;
                     }
                 }
@@ -27,7 +27,7 @@ namespace RetryExecutor {
         }
 
         public static TResult Execute<TResult>(uint retryRemaining, uint intervalSecond, Func<TResult> action,
-                [Optional] Action remainAction, [Optional] Action failureAction) {
+                [Optional] Action<int> remainAction, [Optional] Action<int> failureAction) {
             if (retryRemaining == 0) { throw new ArgumentException("retryRemaining must be greater than or equal to 1."); }
             if (intervalSecond == 0) { throw new ArgumentException("intervalSecond must be greater than or equal to 1."); }
             if (action == null) { throw new ArgumentNullException(nameof(action));}
@@ -39,9 +39,9 @@ namespace RetryExecutor {
                 } catch (Exception e) {
                     if (retryCount++ < retryRemaining) {
                         Thread.Sleep(Convert.ToInt32(intervalSecond * 1000));
-                        remainAction?.Invoke();
+                        remainAction?.Invoke(retryCount);
                     } else {
-                        failureAction?.Invoke();
+                        failureAction?.Invoke(retryCount);
                         throw e;
                     }
                 }
