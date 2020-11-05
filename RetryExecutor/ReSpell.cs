@@ -4,7 +4,8 @@ using System.Threading;
 
 namespace RetryExecutor {
     public class ReSpell {
-        public static void Execute(uint retryRemaining, uint intervalSecond, Action action, [Optional] Action remainAction) {
+        public static void Execute(uint retryRemaining, uint intervalSecond, Action action, 
+                [Optional] Action remainAction, [Optional] Action failureAction) {
             if (retryRemaining == 0) { throw new ArgumentException("retryRemaining must be greater than or equal to 1."); }
             if (intervalSecond == 0) { throw new ArgumentException("intervalSecond must be greater than or equal to 1."); }
             if (action == null) { throw new ArgumentNullException(nameof(action));}
@@ -17,13 +18,16 @@ namespace RetryExecutor {
                     if (retryCount++ < retryRemaining) {
                         Thread.Sleep(Convert.ToInt32(intervalSecond * 1000));
                         remainAction?.Invoke();
+                    } else {
+                        failureAction?.Invoke();
+                        throw e;
                     }
-                    else { throw e; }
                 }
             }
         }
 
-        public static TResult Execute<TResult>(uint retryRemaining, uint intervalSecond, Func<TResult> action, [Optional] Action remainAction) {
+        public static TResult Execute<TResult>(uint retryRemaining, uint intervalSecond, Func<TResult> action,
+                [Optional] Action remainAction, [Optional] Action failureAction) {
             if (retryRemaining == 0) { throw new ArgumentException("retryRemaining must be greater than or equal to 1."); }
             if (intervalSecond == 0) { throw new ArgumentException("intervalSecond must be greater than or equal to 1."); }
             if (action == null) { throw new ArgumentNullException(nameof(action));}
@@ -36,8 +40,10 @@ namespace RetryExecutor {
                     if (retryCount++ < retryRemaining) {
                         Thread.Sleep(Convert.ToInt32(intervalSecond * 1000));
                         remainAction?.Invoke();
-                    } 
-                    else { throw e; }
+                    } else {
+                        failureAction?.Invoke();
+                        throw e;
+                    }
                 }
             }
         }
